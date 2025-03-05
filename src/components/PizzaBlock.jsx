@@ -16,24 +16,14 @@ function PizzaBlock({id,imageUrl,title,types,sizes,price,category,rating}) {
         <ul>
             {types.map(type=>(
                 (types.length>1)?
-                (type==activeType)?
-                <li key={type} className="active">тонкое</li>
+                <li onClick={()=>setActiveType(type)} key={type} className={type==activeType? "active":""}>{type==0?"тонкое":"традиционное"}</li> 
                 :
-                <li key={type}>традиционное</li>
-                : 
-                (type==activeType)?
-                <li key={type} className="active">тонкое</li>
-                :
-                <li key={type} className="active">традиционное</li>
-
+                <li key={type} className="active">{type==0?"тонкое":"традиционное"}</li>
             ))}
         </ul>
         <ul>
             {sizes.map((size,index)=>(
-                (index===activeSize)?
-                 <li className="active"key={size}>{size}см.</li>
-                 :
-                 <li key={size}>{size}см.</li>
+                 <li onClick={()=>setActiveSize(index)} className={index==activeSize?"active":""}key={size}>{size}см.</li>
             ))}
         </ul>
       </div>
