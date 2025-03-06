@@ -1,8 +1,22 @@
+import { useState } from "react";
+
 function Sort() {
+  const sortTypes = ["популярности", "цене", "алфавиту"];
+  const [sort, setSort] = useState(0); //состояние отоброжения видов сортировки
+  const [isOpen, setIsOpen] = useState(false); //попап с сортировкой
+  const [isUp, setIsUp] = useState(true);
+
+
+  function sortClickHAndler() {
+    setIsUp(!isUp)
+  }
+
   return (
     <div className="sort">
       <div className="sort__label">
         <svg
+          onClick={sortClickHAndler}
+          className={"sortSvg " + isUp ? "sortSvg__sort-down" : ""}
           width="10"
           height="6"
           viewBox="0 0 10 6"
@@ -15,15 +29,25 @@ function Sort() {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span>популярности</span>
+        <span onClick={() => setIsOpen(!isOpen)}>{sortTypes[sort]}</span>
       </div>
-      <div className="sort__popup">
-        <ul>
-          <li className="active">популярности</li>
-          <li>цене</li>
-          <li>алфавиту</li>
-        </ul>
-      </div>
+      {isOpen && (
+        <div className="sort__popup">
+          <ul>
+            {sortTypes.map((type, index) => (
+              <li
+                onClick={() => {
+                  setSort(index), setIsOpen(false);
+                }}
+                key={index}
+                className={sort == index ? "active" : ""}
+              >
+                {type}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
