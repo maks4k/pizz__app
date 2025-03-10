@@ -4,19 +4,32 @@ function Sort() {
   const sortTypes = ["популярности", "цене", "алфавиту"];
   const [sort, setSort] = useState(0); //состояние отоброжения видов сортировки
   const [isOpen, setIsOpen] = useState(false); //попап с сортировкой
-  const [isUp, setIsUp] = useState(true);
+  const [isUp, setIsUp] = useState(true);//положения стрелочки
+  // вариант с е таргет
+  // // let svg=e.target;
+  // // if (!e.target.matches("svg")) {
+  // //   svg=e.target.parentElement;
+  // //   console.log(svg);
+    
+  // // }
+  // // // function sortClickHAndler() {
+  // //   setIsUp(!isUp)
+  // // // }
+  // вариант с юсреф
+// let svgRef=useRef(null);
 
-
-  function sortClickHAndler() {
-    setIsUp(!isUp)
-  }
+// function clickSvgHandler() {
+//   svgRef.current.classList.toggle("sortSvg__sort-down")
+// }
 
   return (
     <div className="sort">
       <div className="sort__label">
         <svg
-          onClick={sortClickHAndler}
-          className={"sortSvg " + isUp ? "sortSvg__sort-down" : ""}
+        // ref={svgRef}
+        // onClick={clickSvgHandler}
+          onClick={()=>setIsUp(!isUp)}
+          className={"sortSvg " + (isUp ? "sortSvg__sort-down" : "")}
           width="10"
           height="6"
           viewBox="0 0 10 6"

@@ -1,30 +1,52 @@
 import { useState } from "react";
 
 // {id,imageUrl,title,types,sizes,price,category,rating}//принимаем по ключам их джейсона ,потому что деструктуировали в аппе
-function PizzaBlock({id,imageUrl,title,types,sizes,price,category,rating}) {
- const[activeSize,setActiveSize]=useState(0);
- const[activeType,setActiveType]=useState(0);
+function PizzaBlock({
+  id,
+  imageUrl,
+  title,
+  types,
+  sizes,
+  price,
+  category,
+  rating,
+}) {
+  const [activeSize, setActiveSize] = useState(0);
+  const [activeType, setActiveType] = useState(0);
   return (
     <div className="pizza-block">
-      <img
-        className="pizza-block__image"
-        src={imageUrl}
-        alt="Pizza"
-      />
+      <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
       <h4 className="pizza-block__title">{title}</h4>
       <div className="pizza-block__selector">
         <ul>
-            {types.map(type=>(
-                (types.length>1)?
-                <li onClick={()=>setActiveType(type)} key={type} className={type==activeType? "active":""}>{type==0?"тонкое":"традиционное"}</li> 
-                :
-                <li key={type} className="active">{type==0?"тонкое":"традиционное"}</li>
-            ))}
+          {Array.isArray(types) && types.length > 0 ?
+          types.map((type) =>
+            types.length > 1 ? (
+              <li
+                onClick={() => setActiveType(type)}
+                key={type}
+                className={type == activeType ? "active" : ""}
+              >
+                {type == 0 ? "тонкое" : "традиционное"}
+              </li>
+            ) : (
+              <li key={type} className="active">
+                {type == 0 ? "тонкое" : "традиционное"}
+              </li>
+            )
+          ):<li>Типы недоступны</li>}
         </ul>
         <ul>
-            {sizes.map((size,index)=>(
-                 <li onClick={()=>setActiveSize(index)} className={index==activeSize?"active":""}key={size}>{size}см.</li>
-            ))}
+          {Array.isArray(types) && types.length > 0 ?
+          sizes.map((size, index) => (
+            <li
+              onClick={() => setActiveSize(index)}
+              className={index == activeSize ? "active" : ""}
+              key={size}
+            >
+              {size}см.
+            </li>
+          )):<li>Типы недоступны</li>}
         </ul>
       </div>
       <div className="pizza-block__bottom">
