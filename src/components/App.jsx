@@ -1,39 +1,41 @@
 import "../style/app.scss";
-import Categories from "./Categories";
+import Home from "../pages/Home";
 import ErrorBoundary from "./ErrorBoundary";
 import Header from "./Header";
-import PizzaBlock from "./PizzaBlock";
-import Sort from "./Sort";
+
 import { useEffect, useState } from "react";
+import { Routes,Route } from "react-router-dom";
+
 
 function App() {
   const [pizzas, setPizzas] = useState([]);
-  useEffect(() => {
+  useEffect(() => { 
     fetch("https://67cece81125cd5af757c0c7a.mockapi.io/items")
-      .then((responce) => responce.json())
-      .then((data) => setPizzas(data));
+      .then((response) => response.json())
+      .then((data) => setPizzas(data))
+      // .finally(() => setLoading(false)) // исправлено: используя false вместо !loading
+      .catch((error) => {
+        alert(`ошибка запроса на сервер ${error.name}, ${error.message}`); // Обработка ошибок
+      });
   }, []);
 
   return (
+  
     <ErrorBoundary>
-    <div className="wrapper">
-      <Header />
-      <div className="content">
-        <div className="container">
-          <div className="content__top">
-            <Categories />
-            <Sort />
-          </div>
-          <h2 className="content__title">Все пиццы</h2>
-          <div className="content__items">
-            {pizzas.map((pizza) => (
-              <PizzaBlock key={pizza.id} {...pizza} />
-            ))}
+      <div className="wrapper">
+        <Header />
+        <div className="content">
+          <div className="container">
+          <Routes> 
+          <Route path="/home" element={<Home pizzas={pizzas}/>}/>
+          <Route path="/cart" element="Cartw"/>
+          <Route path="*" element="NotFound"/>
+          </Routes>
           </div>
         </div>
       </div>
-    </div>
     </ErrorBoundary>
+    
   );
 }
 
