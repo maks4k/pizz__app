@@ -6,8 +6,8 @@ import Skeleton from '../components/Skeleton'
 
 
 
-function Home({pizzas}) {
-    const [loading, setLoading] = useState(true);
+function Home({pizzas,loading}) {
+
   return (
     <><div className="content__top">
     <Categories />
