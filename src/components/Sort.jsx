@@ -1,10 +1,11 @@
+import { type } from "jquery";
 import { useState } from "react";
 
-function Sort() {
+function Sort({sort,setSort}) {
   const sortTypes = ["популярности", "цене", "алфавиту"];
-  const [sort, setSort] = useState(0); //состояние отоброжения видов сортировки
+ 
   const [isOpen, setIsOpen] = useState(false); //попап с сортировкой
-  const [isUp, setIsUp] = useState(true);//положения стрелочки
+
   // вариант с е таргет
   // // let svg=e.target;
   // // if (!e.target.matches("svg")) {
@@ -28,8 +29,10 @@ function Sort() {
         <svg
         // ref={svgRef}
         // onClick={clickSvgHandler}
-          onClick={()=>setIsUp(!isUp)}
-          className={"sortSvg " + (isUp ? "sortSvg__sort-down" : "")}
+          onClick={()=>setSort({
+            type:sort.type,
+            isUp:!sort.isUp})}
+          className={"sortSvg " + (sort.isUp ? "sortSvg__sort-down" : "")}
           width="10"
           height="6"
           viewBox="0 0 10 6"
@@ -42,7 +45,7 @@ function Sort() {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsOpen(!isOpen)}>{sortTypes[sort]}</span>
+        <span onClick={() => setIsOpen(!isOpen)}>{sortTypes[sort.type]}</span>
       </div>
       {isOpen && (
         <div className="sort__popup">
@@ -50,10 +53,10 @@ function Sort() {
             {sortTypes.map((type, index) => (
               <li
                 onClick={() => {
-                  setSort(index), setIsOpen(false);
+                  setSort({type:index,isUp:sort.isUp}), setIsOpen(false);
                 }}
                 key={index}
-                className={sort == index ? "active" : ""}
+                className={sort.type == index ? "active" : ""}
               >
                 {type}
               </li>
