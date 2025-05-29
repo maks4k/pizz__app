@@ -1,7 +1,8 @@
-import { type } from "jquery";
-import { useState } from "react";
 
-function Sort({sort,setSort}) {
+import { useContext, useState } from "react";
+import { AppContext } from "./App";
+
+function Sort() {
   const sortTypes = ["популярности", "цене", "алфавиту"];
  
   const [isOpen, setIsOpen] = useState(false); //попап с сортировкой
@@ -22,6 +23,8 @@ function Sort({sort,setSort}) {
 // function clickSvgHandler() {
 //   svgRef.current.classList.toggle("sortSvg__sort-down")
 // }
+const{activeSort,setActiveSort}= useContext(AppContext)
+
 
   return (
     <div className="sort">
@@ -29,10 +32,10 @@ function Sort({sort,setSort}) {
         <svg
         // ref={svgRef}
         // onClick={clickSvgHandler}
-          onClick={()=>setSort({
-            type:sort.type,
-            isUp:!sort.isUp})}
-          className={"sortSvg " + (sort.isUp ? "sortSvg__sort-down" : "")}
+          onClick={()=>setActiveSort({
+            type:activeSort.type,
+            isUp:!activeSort.isUp})}
+          className={"sortSvg " + (activeSort.isUp ? "sortSvg__sort-down" : "")}
           width="10"
           height="6"
           viewBox="0 0 10 6"
@@ -45,7 +48,7 @@ function Sort({sort,setSort}) {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsOpen(!isOpen)}>{sortTypes[sort.type]}</span>
+        <span onClick={() => setIsOpen(!isOpen)}>{sortTypes[activeSort.type]}</span>
       </div>
       {isOpen && (
         <div className="sort__popup">
@@ -53,10 +56,10 @@ function Sort({sort,setSort}) {
             {sortTypes.map((type, index) => (
               <li
                 onClick={() => {
-                  setSort({type:index,isUp:sort.isUp}), setIsOpen(false);
+                  setActiveSort({type:index,isUp:activeSort.isUp}), setIsOpen(false);
                 }}
                 key={index}
-                className={sort.type == index ? "active" : ""}
+                className={activeSort.type == index ? "active" : ""}
               >
                 {type}
               </li>
