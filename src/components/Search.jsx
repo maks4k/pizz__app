@@ -3,14 +3,11 @@ import {AppContext} from "../components/App"
 
 
 function Search() {
-const{pizzas,setPizzas}=useContext(AppContext)
+const{pizzas,setPizzas,setSearch}=useContext(AppContext)
 const inputRef=useRef(null)
 const serchHandler=()=>{
  const value=inputRef.current.value;
-const filtred=pizzas.filter(element => {
- return element.title.toLowerCase().indexOf(value.toLowerCase())!==-1;  
-});
-setPizzas(filtred)
+setSearch(value)
 }
 
   return (
@@ -18,7 +15,7 @@ setPizzas(filtred)
     <div className="wrraper">
  <div className="InputContainer">
 
-  <input ref={inputRef} placeholder="Search.." id="input" className="input" name="text" type="text"></input>
+  <input  ref={inputRef} placeholder="Search.." id="input" className="input" name="text" type="text"></input>
 </div>
 <button onClick={serchHandler} className="beautiful-button">
   Search!

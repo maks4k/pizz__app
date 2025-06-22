@@ -16,6 +16,7 @@ import { createContext } from "react";
 export const AppContext = createContext();
 
 function App() {
+
   const [pizzas, setPizzas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState(0);
@@ -23,30 +24,68 @@ function App() {
     type: 0,
     isUp: true,
   }); //состояние отоброжения видов сортировки
-    useEffect(() => {
-    const category = activeCategory == 0 ? "" : activeCategory;//фильтрации категорий
-    const sort = ["rating","price","title"];//фильтрация по цене и так далее
-    const order = activeSort.isUp==true?'asc':"desc";///* фильтрация стрелочки */
-    const search="а"
-   
-    fetch(
-      `https://67cece81125cd5af757c0c7a.mockapi.io/items?category=${category}&sortBy=${sort[activeSort.type]}&order=${order}&search=${search}`
-    )
-      .then((response) => response.json())
-      .then((data) => setPizzas(data))
-      .finally(() => setLoading(false)) // исправлено: используя false вместо !loading
-      .catch((error) => {
-        alert(`ошибка запроса на сервер: ${error.name}, ${error.message}`); // Обработка ошибок
-      });
-  }, [activeCategory,activeSort]); //производить рендер только при изменении категории
+  const[search,setSearch]=useState("");
+    const store={
+          pizzas,
+          setPizzas,
+          loading,
+          setLoading,
+          activeCategory,
+          activeSort,
+          setActiveSort,
+          setActiveCategory,
+          setSearch
+        }
+  useEffect(() => {
+    const category = activeCategory == 0 ? "" : activeCategory;
+    const sort = ["rating", "price", "title"];
+    const order = activeSort.isUp ? "asc" : "desc";
+    // const search = "";
 
+    Promise.all([
+      fetch(
+        `https://67cece81125cd5af757c0c7a.mockapi.io/items?category=${category}&sortBy=${
+          sort[activeSort.type]
+        }&order=${order}`
+      ),
+      fetch(
+        `https://67cece81125cd5af757c0c7a.mockapi.io/items?search=${search}`
+      ),
+    ])
+      .then(([sorted, searched]) =>
+        Promise.all([sorted.json(), searched.json()])
+      )
+      .then(([sorted, searched]) => {
+        const newData = sorted.filter((sortedItem) =>
+          searched.some((searchedItem) => sortedItem.id == searchedItem.id)
+        );
+        setPizzas(newData);
+      })
+      .finally(() => setLoading(false))
+      .catch((err) => {
+        alert(`Ошибка запрсоа к сереверу:${err.message}`);
+      });
+  }, [activeCategory, activeSort,search]);
+
+  //   fetch(
+  //     `https://67cece81125cd5af757c0c7a.mockapi.io/items?category=${category}&sortBy=${sort[activeSort.type]}&order=${order}&search=${search}`
+  //   )
+  //     .then((response) => response.json())
+  //     .then((data) => setPizzas(data))
+  //     .finally(() => setLoading(false)) // исправлено: используя false вместо !loading
+  //     .catch((error) => {
+  //       alert(`ошибка запроса на сервер: ${error.name}, ${error.message}`); // Обработка ошибок
+  //     });
+  // }, [activeCategory,activeSort]); //производить рендер только при изменении категории
 
   // const routes = useRoutesWrapper();
 
   return (
     <ErrorBoundary>
       {/* <>{routes}</> */}
-      <AppContext.Provider value={{ pizzas, setPizzas,loading,setLoading,activeCategory,activeSort,setActiveSort,setActiveCategory }}>
+      <AppContext.Provider
+        value={store}
+      >
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
