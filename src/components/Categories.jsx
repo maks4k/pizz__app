@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { useEffect } from "react";
 import { AppContext } from "../components/App";
+import { useDispatch, useSelector } from "react-redux";
+import { setCategory } from "../store/slices/filterSlice";
 
 function Categories() {
   const categories = [
@@ -11,7 +13,10 @@ function Categories() {
     "Острые",
     "Закрытые",
   ];
-  const {activeCategory, setActiveCategory} = useContext(AppContext);
+const activeCategory=useSelector((state)=>state.filter.category)
+const dispatch=useDispatch();
+
+  // const {activeCategory, setActiveCategory} = useContext(AppContext);
 
   // useEffect(() => {
   //   fetch(`https://67cece81125cd5af757c0c7a.mockapi.io/items?category=${active}`)
@@ -27,7 +32,7 @@ function Categories() {
       <ul>
         {categories.map((categorie, index) => (
           <li
-            onClick={() => setActiveCategory(index)}
+            onClick={() => dispatch(setCategory(index))}
             key={index}
             className={index == activeCategory ? "active" : ""}
           >

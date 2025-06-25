@@ -8,6 +8,7 @@ import Cart from "../pages/Cart";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
 import { createContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 // import { Route, Routes } from "react-router-dom";
 // import Home from "../pages/Home";
 // import Cart from "../pages/Cart";
@@ -16,10 +17,11 @@ import { createContext } from "react";
 export const AppContext = createContext();
 
 function App() {
+const activeCategory=useSelector((state)=>state.filter.category)
 
   const [pizzas, setPizzas] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState(0);
+ 
   const [activeSort, setActiveSort] = useState({
     type: 0,
     isUp: true,
@@ -30,10 +32,8 @@ function App() {
           setPizzas,
           loading,
           setLoading,
-          activeCategory,
           activeSort,
           setActiveSort,
-          setActiveCategory,
           setSearch
         }
   useEffect(() => {
