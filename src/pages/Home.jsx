@@ -25,7 +25,7 @@ const{pizzas,setPizzas,loading,activeCategory,activeSort}=useContext(AppContext)
         <Categories/>
         <Sort />
       </div>
-      <h2 className="content__title">Все пиццы</h2>
+    {loading==false?(pizzas.length>0?<h2 className="content__title">Все пиццы</h2>:<h2 className="content__title">Пиццы не найдены😢</h2>):null}
       <div className="content__items">
         {!loading ? (
           pizzas.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)

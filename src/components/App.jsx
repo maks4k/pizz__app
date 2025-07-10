@@ -1,14 +1,15 @@
 import "../style/app.scss";
 import ErrorBoundary from "./ErrorBoundary";
 import Layout from "./Layout";
-import { act, useEffect, useState } from "react";
-import useRoutesWrapper from "../hooks/useRoutesWrapper";
+import { useEffect, useState } from "react";
+// import useRoutesWrapper from "../hooks/useRoutesWrapper";
 import { Route, Routes } from "react-router-dom";
 import Cart from "../pages/Cart";
 import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
 import { createContext } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector } from "react-redux";
+import { setPizzas } from "../store/slices/pizzasSlice";
 // import { Route, Routes } from "react-router-dom";
 // import Home from "../pages/Home";
 // import Cart from "../pages/Cart";
@@ -17,36 +18,37 @@ import { useDispatch, useSelector } from "react-redux";
 export const AppContext = createContext();
 
 function App() {
-const activeCategory=useSelector((state)=>state.filter.category)
+  const activeCategory = useSelector((state) => state.filter.category);
+  const pizzas=useSelector(state=>state.pizzas.items);
+  
+  // const [activeSort, setActiveSort] = useState({
+  //   type: 0,
+  //   isUp: true,
+  // }); //состояние отоброжения видов сортировки
+  const { type, isUp } = useSelector((state) => state.filter.sort);
+  const dispatch=useDispatch()
 
-  const [pizzas, setPizzas] = useState([]);
+
   const [loading, setLoading] = useState(true);
- 
-  const [activeSort, setActiveSort] = useState({
-    type: 0,
-    isUp: true,
-  }); //состояние отоброжения видов сортировки
-  const[search,setSearch]=useState("");
-    const store={
-          pizzas,
-          setPizzas,
-          loading,
-          setLoading,
-          activeSort,
-          setActiveSort,
-          setSearch
-        }
+
+  const [search, setSearch] = useState("");
+
+  const store = {
+    pizzas,
+    setPizzas,
+    loading,
+    setLoading,
+    setSearch,
+  };
   useEffect(() => {
     const category = activeCategory == 0 ? "" : activeCategory;
     const sort = ["rating", "price", "title"];
-    const order = activeSort.isUp ? "asc" : "desc";
+    const order = isUp ? "asc" : "desc";
     // const search = "";
 
     Promise.all([
       fetch(
-        `https://67cece81125cd5af757c0c7a.mockapi.io/items?category=${category}&sortBy=${
-          sort[activeSort.type]
-        }&order=${order}`
+        `https://67cece81125cd5af757c0c7a.mockapi.io/items?category=${category}&sortBy=${sort[type]}&order=${order}`
       ),
       fetch(
         `https://67cece81125cd5af757c0c7a.mockapi.io/items?search=${search}`
@@ -56,16 +58,19 @@ const activeCategory=useSelector((state)=>state.filter.category)
         Promise.all([sorted.json(), searched.json()])
       )
       .then(([sorted, searched]) => {
+        sorted = Array.isArray(sorted) ? sorted : []; //проверка на то что приходит масив,нужен был что бы отоброзить что пиццы не найденны
+        searched = Array.isArray(searched) ? searched : [];
         const newData = sorted.filter((sortedItem) =>
           searched.some((searchedItem) => sortedItem.id == searchedItem.id)
         );
-        setPizzas(newData);
+        dispatch(setPizzas(newData))
+        
       })
       .finally(() => setLoading(false))
       .catch((err) => {
         alert(`Ошибка запрсоа к сереверу:${err.message}`);
       });
-  }, [activeCategory, activeSort,search]);
+  }, [activeCategory, type, isUp, search]);
 
   //   fetch(
   //     `https://67cece81125cd5af757c0c7a.mockapi.io/items?category=${category}&sortBy=${sort[activeSort.type]}&order=${order}&search=${search}`
@@ -83,9 +88,7 @@ const activeCategory=useSelector((state)=>state.filter.category)
   return (
     <ErrorBoundary>
       {/* <>{routes}</> */}
-      <AppContext.Provider
-        value={store}
-      >
+      <AppContext.Provider value={store}>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />

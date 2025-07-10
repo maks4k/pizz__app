@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem } from "../store/slices/cartSlice";
 
 // {id,imageUrl,title,types,sizes,price,category,rating}//принимаем по ключам их джейсона ,потому что деструктуировали в аппе
 function PizzaBlock({
@@ -13,6 +15,23 @@ function PizzaBlock({
 }) {
   const [activeSize, setActiveSize] = useState(0);
   const [activeType, setActiveType] = useState(0);
+  
+
+ const dispatch=useDispatch();
+ const cartItems=useSelector(state=>state.cart.items);
+ 
+const index = useMemo(()=>{
+ return cartItems.findIndex(item => item.id === id);
+},[id,cartItems])
+
+
+const qty = index !== -1 ? cartItems[index].qty : 0;
+
+
+  
+
+  
+
   return (
     <div className="pizza-block">
       <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
@@ -49,7 +68,7 @@ function PizzaBlock({
           )):<li>Типы недоступны</li>}
         </ul>
       </div>
-      <div className="pizza-block__bottom">
+      <div onClick={()=>dispatch(addItem(id))} className="pizza-block__bottom">
         <div className="pizza-block__price">{price}</div>
         <div className="button button--outline button--add">
           <svg
@@ -64,8 +83,8 @@ function PizzaBlock({
               fill="white"
             />
           </svg>
-          <span>Добавить</span>
-          <i>0</i>
+          <span >Добавить</span>
+          <i>{qty}</i>
         </div>
       </div>
     </div>

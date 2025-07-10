@@ -7,7 +7,8 @@ const{pizzas,setPizzas,setSearch}=useContext(AppContext)
 const inputRef=useRef(null)
 const serchHandler=()=>{
  const value=inputRef.current.value;
-setSearch(value)
+setSearch(value);
+// inputRef.current.value="";если надо очистить инпут после поиска
 }
 
   return (
@@ -15,9 +16,14 @@ setSearch(value)
     <div className="wrraper">
  <div className="InputContainer">
 
-  <input  ref={inputRef} placeholder="Search.." id="input" className="input" name="text" type="text"></input>
+  <input  ref={inputRef} placeholder="Search.." id="input" className="input" name="text" type="text" onKeyDown={(e)=>
+   {
+    e.keyCode==13&&serchHandler();
+    
+   }
+  }></input>
 </div>
-<button onClick={serchHandler} className="beautiful-button">
+<button onClick={serchHandler}  className="beautiful-button">
   Search!
 </button>
 </div>
