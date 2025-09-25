@@ -10,27 +10,20 @@ function PizzaBlock({
   types,
   sizes,
   price,
-  category,
-  rating,
+  // category,
+  // rating,
 }) {
   const [activeSize, setActiveSize] = useState(0);
   const [activeType, setActiveType] = useState(0);
-  
 
- const dispatch=useDispatch();
- const cartItems=useSelector(state=>state.cart.items);
- 
-const index = useMemo(()=>{
- return cartItems.findIndex(item => item.id === id);
-},[id,cartItems])
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+  const item = { id, imageUrl, title, price,activeSize,activeType};
+  const index = useMemo(() => {
+    return cartItems.findIndex((item) => item.id === id);
+  }, [id, cartItems]);
 
-
-const qty = index !== -1 ? cartItems[index].qty : 0;
-
-
-  
-
-  
+  const qty = index !== -1 ? cartItems[index].qty : 0;
 
   return (
     <div className="pizza-block">
@@ -38,39 +31,48 @@ const qty = index !== -1 ? cartItems[index].qty : 0;
       <h4 className="pizza-block__title">{title}</h4>
       <div className="pizza-block__selector">
         <ul>
-          {Array.isArray(types) && types.length > 0 ?
-          types.map((type) =>
-            types.length > 1 ? (
-              <li
-                onClick={() => setActiveType(type)}
-                key={type}
-                className={type == activeType ? "active" : ""}
-              >
-                {type == 0 ? "тонкое" : "традиционное"}
-              </li>
-            ) : (
-              <li key={type} className="active">
-                {type == 0 ? "тонкое" : "традиционное"}
-              </li>
+          {Array.isArray(types) && types.length > 0 ? (
+            types.map((type) =>
+              types.length > 1 ? (
+                <li
+                  onClick={() => setActiveType(type)}
+                  key={type}
+                  className={type == activeType ? "active" : ""}
+                >
+                  {type == 0 ? "тонкое" : "традиционное"}
+                </li>
+              ) : (
+                <li key={type} className="active">
+                  {type == 0 ? "тонкое" : "традиционное"}
+                </li>
+              )
             )
-          ):<li>Типы недоступны</li>}
+          ) : (
+            <li>Типы недоступны</li>
+          )}
         </ul>
         <ul>
-          {Array.isArray(types) && types.length > 0 ?
-          sizes.map((size, index) => (
-            <li
-              onClick={() => setActiveSize(index)}
-              className={index == activeSize ? "active" : ""}
-              key={size}
-            >
-              {size}см.
-            </li>
-          )):<li>Типы недоступны</li>}
+          {Array.isArray(types) && types.length > 0 ? (
+            sizes.map((size, index) => (
+              <li
+                onClick={() => setActiveSize(index)}
+                className={index == activeSize ? "active" : ""}
+                key={size}
+              >
+                {size}см.
+              </li>
+            ))
+          ) : (
+            <li>Типы недоступны</li>
+          )}
         </ul>
       </div>
-      <div onClick={()=>dispatch(addItem(id))} className="pizza-block__bottom">
+      <div className="pizza-block__bottom">
         <div className="pizza-block__price">{price}</div>
-        <div className="button button--outline button--add">
+        <div
+          onClick={() => dispatch(addItem(item))}
+          className="button button--outline button--add"
+        >
           <svg
             width="12"
             height="12"
@@ -83,7 +85,7 @@ const qty = index !== -1 ? cartItems[index].qty : 0;
               fill="white"
             />
           </svg>
-          <span >Добавить</span>
+          <span>Добавить</span>
           <i>{qty}</i>
         </div>
       </div>
