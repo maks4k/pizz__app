@@ -18,12 +18,17 @@ function PizzaBlock({
 
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
-  const item = { id, imageUrl, title, price,activeSize,activeType};
-  const index = useMemo(() => {
-    return cartItems.findIndex((item) => item.id === id);
-  }, [id, cartItems]);
+  const item = { id, imageUrl, title, price, activeSize, activeType };
 
-  const qty = index !== -1 ? cartItems[index].qty : 0;
+
+  const [index,qty] = useMemo(() => {
+    const index = cartItems.findIndex((item) => item.id == id);
+      let qty = 0;
+    if (index != -1) {
+      qty = cartItems[index].totalQty;
+    }
+    return [index,qty];
+  }, [id, cartItems]);
 
   return (
     <div className="pizza-block">

@@ -9,6 +9,7 @@ const initialState = {
   //     "title",
   //     "imageUrl",
   //     "price",
+  //       totlaQty:10
   //     "details":[
   //       {
   //         "type":"0",
@@ -41,16 +42,19 @@ const cartSlice = createSlice({
           imageUrl,
           title,
           price,
+          totalQty: 1,
           details: [
             {
               //пицца c типом из activeType
               type: activeType,
               //с размером из usestate=>activeSize
               sizes: [{ size: activeSize, qty: 1 }],
-            }, 
+            },
           ],
         };
         state.items.push(item);
+        state.count = state.count + 1;
+        state.total = state.total + price;
       } else {
         const detailsTypeInd = state.items[Itemsindex].details.findIndex(
           (el) => el.type == activeType
@@ -62,6 +66,9 @@ const cartSlice = createSlice({
           if (typeSizeInd != -1) {
             state.items[Itemsindex].details[detailsTypeInd].sizes[typeSizeInd]
               .qty++;
+            state.items[Itemsindex].totalQty++;
+            state.count = state.count + 1;
+            state.total = state.total + price;
           } else {
             const sizeItem = {
               size: activeSize,
@@ -70,6 +77,9 @@ const cartSlice = createSlice({
             state.items[Itemsindex].details[detailsTypeInd].sizes.push(
               sizeItem
             );
+            state.items[Itemsindex].totalQty++;
+            state.count = state.count + 1;
+            state.total = state.total + price;
           }
         } else {
           const detailsItem = {
@@ -82,6 +92,9 @@ const cartSlice = createSlice({
             ],
           };
           state.items[Itemsindex].details.push(detailsItem);
+          state.items[Itemsindex].totalQty++;
+          state.count = state.count + 1;
+          state.total = state.total + price;
         }
       }
       // state.count = state.items.reduce((count, item) => count + item.qty, 0);
